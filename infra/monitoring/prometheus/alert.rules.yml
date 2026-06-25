@@ -1,0 +1,29 @@
+groups:
+- name: ml-api-alerts
+  rules:
+  - alert: HighRequestLatency
+    expr: rate(request_latency_seconds_sum[1m]) / rate(request_latency_seconds_count[1m]) > 1
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High request latency detected"
+      description: "API latency is above 1 second for more than 2 minutes"
+
+  - alert: HighErrorRate
+    expr: rate(request_total{status="error"}[1m]) > 0.1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate detected"
+      description: "More than 10% of requests are failing"
+
+  - alert: LowRequestRate
+    expr: rate(request_total[1m]) < 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Low request rate detected"
+      description: "API is receiving less than 1 request per minute for 5 minutes"

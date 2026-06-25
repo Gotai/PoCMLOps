@@ -1,0 +1,2 @@
+from .prediction_request import PredictionRequest as PredictionRequest
+from .prediction_response import PredictionResponse as PredictionResponse

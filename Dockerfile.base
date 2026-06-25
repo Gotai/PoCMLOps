@@ -1,0 +1,29 @@
+# Dockerfile.base can be shared for all Python services
+# those will have to COPY the project level files and install the project via uv as well
+# they also must set their own entrypoints
+
+# this python version must be >= the python version used for the uv project
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim AS runtime
+
+# System deps (git, curl, build‑essential for PyTorch)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git curl build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG NONROOT_UID=999
+ARG NONROOT_GID=999
+ARG NONROOT_USER=appuser
+
+WORKDIR /app
+
+RUN groupadd --system --gid ${NONROOT_GID} ${NONROOT_USER} \
+&&  useradd --system --gid ${NONROOT_GID} --uid ${NONROOT_UID} \
+    --create-home ${NONROOT_USER}
+
+# this ensures correct usage of interpreter and packages
+# and disables the output bufferin
+ENV PATH="/app/.venv/bin:${PATH}" \
+    PYTHONUNBUFFERED=1
+
+USER ${NONROOT_UID}:${NONROOT_GID}

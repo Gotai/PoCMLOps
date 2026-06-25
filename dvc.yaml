@@ -1,0 +1,23 @@
+stages:
+  etl:
+    cmd: uv run python src/etl/data_processing.py --input-dir data/raw/ --output-file data/processed/train.parquet
+    deps:
+      - src/etl/data_processing.py
+    outs:
+      - data/processed/train.parquet:
+          cache: true
+          persist: true
+  train:
+    cmd: uv run python src/train/train.py data/processed/train.parquet model.pkl
+    deps:
+      - src/train/train.py
+      - data/processed/train.parquet
+    outs:
+      - model.pkl:
+          cache: true
+    metrics:
+      - metrics.json:
+          cache: false
+    plots:
+      - plots/learning_curve.png:
+          cache: false

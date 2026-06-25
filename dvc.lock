@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  etl:
+    cmd: uv run python src/etl/data_processing.py --input-dir data/raw/ 
+      --output-file data/processed/train.parquet
+    deps:
+    - path: src/etl/data_processing.py
+      hash: md5
+      md5: ccc510282c946c44f020629dfe5900b5
+      size: 4302
+    outs:
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 56d1d50f6fbf7077f999fccf2b9c3fd1
+      size: 3613
